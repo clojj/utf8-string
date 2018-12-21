@@ -34,7 +34,6 @@ module Data.ByteString.UTF8
   , length
   , lines
   , lines'
-  , singleton
   , last
   , unlines
   , init
@@ -223,16 +222,13 @@ lines' bs = case B.elemIndex 10 bs of
                         in xs : lines' ys
               Nothing -> [bs]
 
-singleton :: Char -> B.ByteString
-singleton ch = fromString [ch]
-
 last :: B.ByteString -> Char
 last = chr . fromEnum . B.last
 
 unlines :: [B.ByteString] -> B.ByteString
 unlines [] = B.empty
 unlines ss = B.concat (intersperse nl ss) `B.append` nl -- half as much space
-  where nl = singleton '\n'
+  where nl = fromChar '\n'
 
 init :: B.ByteString -> B.ByteString
 init bs = take (length bs - 1) bs
