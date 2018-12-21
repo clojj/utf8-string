@@ -34,15 +34,22 @@ module Data.ByteString.UTF8
   , length
   , lines
   , lines'
+  , singleton
+  , last
+  , unlines
+  , init
   ) where
 
 import Data.Bits
 import Data.Word
 import qualified Data.ByteString as B
-import Prelude hiding (take,drop,splitAt,span,break,foldr,foldl,length,lines)
+import Prelude hiding (take,drop,splitAt,span,break,foldr,foldl,length,lines,last,unlines,init)
 
 import Codec.Binary.UTF8.String(encode)
 import Codec.Binary.UTF8.Generic (buncons)
+
+import Data.Char (chr, ord)
+import Data.List (intersperse)
 
 -- | Converts a Haskell char into a UTF8 encoded bytestring.
 fromChar :: Char -> B.ByteString
@@ -216,3 +223,16 @@ lines' bs = case B.elemIndex 10 bs of
                         in xs : lines' ys
               Nothing -> [bs]
 
+singleton :: Char -> B.ByteString
+singleton ch = fromString [ch]
+
+last :: B.ByteString -> Char
+last = chr . fromEnum . B.last
+
+unlines :: [B.ByteString] -> B.ByteString
+unlines [] = B.empty
+unlines ss = B.concat (intersperse nl ss) `B.append` nl -- half as much space
+  where nl = singleton '\n'
+
+init :: B.ByteString -> B.ByteString
+init bs = take (length bs - 1) bs
