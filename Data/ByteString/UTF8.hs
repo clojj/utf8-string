@@ -223,7 +223,9 @@ lines' bs = case B.elemIndex 10 bs of
               Nothing -> [bs]
 
 last :: B.ByteString -> Char
-last = chr . fromEnum . B.last
+last bs =  
+  let [c] = toString $ drop (length bs - 1) bs
+  in c
 
 unlines :: [B.ByteString] -> B.ByteString
 unlines [] = B.empty
